@@ -51,6 +51,6 @@ enum SteadyModels {
     }
 
     static func testContainer() -> ModelContainer {
-        return try! ModelContainer(for: schema, configurations: ModelConfiguration(isStoredInMemoryOnly: true))
+        return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
     }
 }
