@@ -7,7 +7,7 @@ struct RootView: View {
     var body: some View {
         TabView {
             TimelineView().tabItem { Label("Timeline", systemImage: "list.bullet.rectangle") }
-            Text("Trends").tabItem { Label("Trends", systemImage: "chart.xyaxis.line") }
+            TrendsView().tabItem { Label("Trends", systemImage: "chart.xyaxis.line") }
             MedsView().tabItem { Label("Meds", systemImage: "pills") }
             SettingsView().tabItem { Label("Settings", systemImage: "gearshape") }
         }
