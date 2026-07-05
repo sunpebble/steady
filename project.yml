@@ -36,6 +36,11 @@ targets:
         UIBackgroundModes: [remote-notification]
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
     dependencies:
       - target: SteadyWidget
         embed: true
@@ -71,6 +76,7 @@ targets:
         PRODUCT_BUNDLE_IDENTIFIER: com.sunpebble.steady.watchkitapp
         INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sunpebble.steady
         GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleIconName: AppIcon
         INFOPLIST_KEY_WKApplication: YES
         INFOPLIST_KEY_NSHealthShareUsageDescription: Steady reads your readings to show them on your wrist.
         INFOPLIST_KEY_NSHealthUpdateUsageDescription: Steady saves readings you log into Health.
