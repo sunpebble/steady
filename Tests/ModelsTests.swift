@@ -38,4 +38,28 @@ final class ModelsTests: XCTestCase {
         XCTAssertTrue(todayLog(for: med, slot: 8 * 60, in: logs) === hit)
         XCTAssertNil(todayLog(for: med, slot: 7 * 60, in: logs))
     }
+
+    func testSettingsStoreRoundTrip() {
+        let defaults = UserDefaults.standard
+        let kind = Reading.Kind.glucose
+        let keys = ["target.\(kind.rawValue).lo", "target.\(kind.rawValue).hi", "measurementReminder"]
+        let oldValues = keys.map { defaults.object(forKey: $0) }
+        defer {
+            for (key, value) in zip(keys, oldValues) {
+                if let value { defaults.set(value, forKey: key) }
+                else { defaults.removeObject(forKey: key) }
+            }
+        }
+
+        SettingsStore.setTargetRange(70...140, for: kind)
+        XCTAssertEqual(SettingsStore.targetRange(for: kind), 70...140)
+        SettingsStore.setTargetRange(nil, for: kind)
+        XCTAssertNil(SettingsStore.targetRange(for: kind))
+
+        let reminder = MeasurementReminder(hour: 9, minute: 30, kinds: [kind.rawValue])
+        SettingsStore.measurementReminder = reminder
+        XCTAssertEqual(SettingsStore.measurementReminder, reminder)
+        SettingsStore.measurementReminder = nil
+        XCTAssertNil(SettingsStore.measurementReminder)
+    }
 }

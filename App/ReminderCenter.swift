@@ -46,5 +46,32 @@ enum ReminderCenter {
 }
 
 enum SettingsStore {
-    static var measurementReminder: MeasurementReminder? { nil }
+    static func targetRange(for kind: Reading.Kind) -> ClosedRange<Double>? {
+        let lo = UserDefaults.standard.double(forKey: "target.\(kind.rawValue).lo")
+        let hi = UserDefaults.standard.double(forKey: "target.\(kind.rawValue).hi")
+        return hi > lo && hi > 0 ? lo...hi : nil
+    }
+
+    static func setTargetRange(_ range: ClosedRange<Double>?, for kind: Reading.Kind) {
+        UserDefaults.standard.set(range?.lowerBound ?? 0, forKey: "target.\(kind.rawValue).lo")
+        UserDefaults.standard.set(range?.upperBound ?? 0, forKey: "target.\(kind.rawValue).hi")
+    }
+
+    static var measurementReminder: MeasurementReminder? {
+        get {
+            UserDefaults.standard.data(forKey: "measurementReminder")
+                .flatMap { try? JSONDecoder().decode(MeasurementReminder.self, from: $0) }
+        }
+        set {
+            UserDefaults.standard.set(newValue.flatMap { try? JSONEncoder().encode($0) },
+                                      forKey: "measurementReminder")
+        }
+    }
+}
+
+enum Disclaimer {
+    // 合规红线: 纯记录工具的免责声明, en 源文案, zh-Hans 在 xcstrings
+    static var text: String {
+        String(localized: "Steady is a record-keeping tool, not a medical device. It does not diagnose, treat, or give medical advice. Target ranges shown are the ones you entered yourself. Always consult your doctor about your readings.")
+    }
 }
