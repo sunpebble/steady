@@ -18,6 +18,7 @@ struct MedsView: View {
     @Environment(\.modelContext) private var ctx
     @Query(filter: #Predicate<Medication> { !$0.archived }, sort: \Medication.createdAt)
     private var meds: [Medication]
+    @Query private var allMeds: [Medication]
     @Query private var logs: [MedLog]
     @State private var editing: Medication?
     @State private var adding = false
@@ -48,7 +49,11 @@ struct MedsView: View {
                             }
                         }
                     }
-                    .onDelete { idx in idx.forEach { meds[$0].archived = true } }
+                    .onDelete { idx in
+                        idx.forEach { meds[$0].archived = true }
+                        try? ctx.save()
+                        Task { await ReminderCenter.sync(meds: allMeds, measurement: SettingsStore.measurementReminder) }
+                    }
                 }
             }
             .navigationTitle("Meds")
@@ -80,6 +85,7 @@ struct MedEditView: View {
     @Environment(\.modelContext) private var ctx
     @Environment(\.dismiss) private var dismiss
     let med: Medication?
+    @Query private var allMeds: [Medication]
     @State private var name = ""
     @State private var dosage = ""
     @State private var times: [Date] = []
@@ -123,13 +129,19 @@ struct MedEditView: View {
         let minutes = times.map {
             Calendar.current.component(.hour, from: $0) * 60 + Calendar.current.component(.minute, from: $0)
         }.sorted()
+        let medsToSync: [Medication]
         if let med {
             med.name = name
             med.dosage = dosage
             med.times = minutes
+            medsToSync = allMeds
         } else {
-            ctx.insert(Medication(name: name, dosage: dosage, times: minutes))
+            let newMed = Medication(name: name, dosage: dosage, times: minutes)
+            ctx.insert(newMed)
+            medsToSync = allMeds + [newMed]
         }
+        try? ctx.save()
         dismiss()
+        Task { await ReminderCenter.sync(meds: medsToSync, measurement: SettingsStore.measurementReminder) }
     }
 }
