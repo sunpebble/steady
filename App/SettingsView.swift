@@ -2,9 +2,11 @@ import SwiftUI
 import SwiftData
 
 struct SettingsView: View {
+    @Environment(ProStore.self) private var pro
     @Query private var meds: [Medication]
     @State private var reminder = SettingsStore.measurementReminder
     @State private var ranges: [Reading.Kind: (String, String)] = [:]
+    @State private var showPaywall = false
 
     var body: some View {
         NavigationStack {
@@ -27,10 +29,18 @@ struct SettingsView: View {
                 Section {
                     Text(Disclaimer.text).font(Theme.font(12)).foregroundStyle(Theme.secondaryText)
                 }
+                Section {
+                    if pro.isPro {
+                        Label("Steady Pro — unlocked", systemImage: "checkmark.seal.fill")
+                    } else {
+                        Button("Steady Pro…") { showPaywall = true }
+                    }
+                }
             }
             .navigationTitle("Settings")
             .onAppear { loadRanges() }
             .onDisappear { saveAll() }
+            .sheet(isPresented: $showPaywall) { PaywallView() }
         }
     }
 
