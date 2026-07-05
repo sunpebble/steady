@@ -1,0 +1,84 @@
+name: Steady
+options:
+  bundleIdPrefix: com.sunpebble
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+settings:
+  base:
+    SWIFT_VERSION: "5.0"
+    DEVELOPMENT_TEAM: 62HCT6Q83X
+    MARKETING_VERSION: 0.1.0 # x-release-please-version
+    CURRENT_PROJECT_VERSION: 1
+targets:
+  Steady:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sunpebble.steady
+        CODE_SIGN_ENTITLEMENTS: App/Steady.entitlements
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleDisplayName: Steady
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        UILaunchScreen: {}
+        NSHealthShareUsageDescription: Steady reads your blood pressure, blood glucose, weight, heart rate and blood oxygen from Health to show them in one place. Your data never leaves your devices.
+        NSHealthUpdateUsageDescription: Steady saves readings you log by hand into Health, so all your health apps stay in sync.
+        ITSAppUsesNonExemptEncryption: false
+        CFBundleURLTypes:
+          - CFBundleURLSchemes: [steady]
+        UIBackgroundModes: [remote-notification]
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+    dependencies:
+      - target: SteadyWidget
+        embed: true
+  SteadyWidget:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Widget
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sunpebble.steady.widget
+        CODE_SIGN_ENTITLEMENTS: Widget/SteadyWidget.entitlements
+    info:
+      path: Widget/Info.plist
+      properties:
+        CFBundleDisplayName: Steady
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+  SteadyTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - Tests
+      - path: Steady.storekit
+        buildPhase: resources
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+    dependencies:
+      - target: Steady
+schemes:
+  Steady:
+    build:
+      targets:
+        Steady: all
+    run:
+      config: Debug
+      storeKitConfiguration: Steady.storekit
+      commandLineArguments:
+        "-pro": false
+    test:
+      targets:
+        - SteadyTests
