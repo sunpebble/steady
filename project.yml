@@ -39,6 +39,8 @@ targets:
     dependencies:
       - target: SteadyWidget
         embed: true
+      - target: SteadyWatch
+        embed: true
   SteadyWidget:
     type: app-extension
     platform: iOS
@@ -57,6 +59,22 @@ targets:
         CFBundleVersion: $(CURRENT_PROJECT_VERSION)
         NSExtension:
           NSExtensionPointIdentifier: com.apple.widgetkit-extension
+  SteadyWatch:
+    type: application
+    platform: watchOS
+    deploymentTarget: "10.0"
+    sources:
+      - Watch
+      - Shared
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sunpebble.steady.watchkitapp
+        INFOPLIST_KEY_WKCompanionAppBundleIdentifier: com.sunpebble.steady
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_WKApplication: YES
+        INFOPLIST_KEY_NSHealthShareUsageDescription: Steady reads your readings to show them on your wrist.
+        INFOPLIST_KEY_NSHealthUpdateUsageDescription: Steady saves readings you log into Health.
+        CODE_SIGN_ENTITLEMENTS: Watch/SteadyWatch.entitlements
   SteadyTests:
     type: bundle.unit-test
     platform: iOS

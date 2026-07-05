@@ -54,3 +54,20 @@ enum SteadyModels {
         return try! ModelContainer(for: schema, configurations: ModelConfiguration(schema: schema, isStoredInMemoryOnly: true, cloudKitDatabase: .none))
     }
 }
+
+func todayLog(for med: Medication, slot: Int, in logs: [MedLog]) -> MedLog? {
+    logs.first {
+        $0.medication?.persistentModelID == med.persistentModelID
+            && $0.slot == slot
+            && Calendar.current.isDateInToday($0.date)
+    }
+}
+
+func minutesLabel(_ minutes: Int) -> String {
+    let time = Calendar.current.date(
+        bySettingHour: minutes / 60,
+        minute: minutes % 60,
+        second: 0,
+        of: .now)!
+    return time.formatted(date: .omitted, time: .shortened)
+}

@@ -1,19 +1,6 @@
 import SwiftUI
 import SwiftData
 
-func todayLog(for med: Medication, slot: Int, in logs: [MedLog]) -> MedLog? {
-    logs.first {
-        $0.medication?.persistentModelID == med.persistentModelID
-            && $0.slot == slot
-            && Calendar.current.isDateInToday($0.date)
-    }
-}
-
-func minutesLabel(_ minutes: Int) -> String {
-    let t = Calendar.current.date(bySettingHour: minutes / 60, minute: minutes % 60, second: 0, of: .now)!
-    return t.formatted(date: .omitted, time: .shortened)
-}
-
 struct MedsView: View {
     @Environment(\.modelContext) private var ctx
     @Query(filter: #Predicate<Medication> { !$0.archived }, sort: \Medication.createdAt)
