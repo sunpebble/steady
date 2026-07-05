@@ -2,15 +2,26 @@ import SwiftUI
 import SwiftData
 
 struct SettingsView: View {
+    @Environment(HealthStore.self) private var health
     @Environment(ProStore.self) private var pro
     @Query private var meds: [Medication]
     @State private var reminder = SettingsStore.measurementReminder
     @State private var ranges: [Reading.Kind: (String, String)] = [:]
     @State private var showPaywall = false
+    @State private var csvURL: URL?
 
     var body: some View {
         NavigationStack {
             Form {
+                Section("Export") {
+                    NavigationLink("Doctor report") { ReportView() }
+                    Button("Export CSV", systemImage: "tablecells") { exportCSV() }
+                    if let csvURL {
+                        ShareLink(item: csvURL) {
+                            Label("Share CSV", systemImage: "square.and.arrow.up")
+                        }
+                    }
+                }
                 Section {
                     ForEach([Reading.Kind.bloodPressure, .glucose, .weight]) { kind in
                         rangeRow(kind)
@@ -96,5 +107,15 @@ struct SettingsView: View {
         }
         SettingsStore.measurementReminder = reminder
         Task { await ReminderCenter.sync(meds: meds, measurement: reminder) }
+    }
+
+    private func exportCSV() {
+        guard pro.isPro else {
+            showPaywall = true
+            return
+        }
+        let url = URL.temporaryDirectory.appending(path: "steady.csv")
+        try? ReportModel.csv(readings: health.readings).write(to: url, atomically: true, encoding: .utf8)
+        csvURL = url
     }
 }
