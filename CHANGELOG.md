@@ -1,5 +1,13 @@
 # Changelog
 
+## [0.3.0](https://github.com/sunpebble/steady/compare/v0.2.1...v0.3.0) (2026-07-06)
+
+
+### Features
+
+* seedDemo data generator ([266613b](https://github.com/sunpebble/steady/commit/266613ba82ccb6e7e04b085915b26c78d9288e58))
+* wire -seedDemo launch argument ([2aa4d5b](https://github.com/sunpebble/steady/commit/2aa4d5ba7d39c9b3ee0ca8f45e403ff4f1f76861))
+
 ## [0.2.1](https://github.com/sunpebble/steady/compare/v0.2.0...v0.2.1) (2026-07-05)
 
 
