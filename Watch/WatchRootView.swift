@@ -34,7 +34,7 @@ struct WatchLogView: View {
                     .focusable()
                     .digitalCrownRotation($secondary, from: 0, through: 200, by: 1)
             }
-            Button(saved ? "Saved" : "Save") { save() }
+            Button(saved ? String(localized: "Saved") : String(localized: "Save")) { save() }
                 .disabled(value <= 0 || (kind == .bloodPressure && secondary <= 0))
         }
     }

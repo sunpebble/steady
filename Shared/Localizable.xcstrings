@@ -810,6 +810,106 @@
           }
         }
       }
+    },
+    "Systolic": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "收缩压"
+          }
+        }
+      }
+    },
+    "New medication": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "新用药"
+          }
+        }
+      }
+    },
+    "Edit medication": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "编辑用药"
+          }
+        }
+      }
+    },
+    "Dose %lld": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "第 %lld 次"
+          }
+        }
+      }
+    },
+    "Saved": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "已保存"
+          }
+        }
+      }
+    },
+    "Add medications on iPhone.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "请在 iPhone 上添加用药。"
+          }
+        }
+      }
+    },
+    "Quick log": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "快速记录"
+          }
+        }
+      }
+    },
+    "Log a reading with one tap.": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "一键记录读数。"
+          }
+        }
+      }
+    },
+    "Widgets are part of Steady Pro": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "小组件是 Steady Pro 功能"
+          }
+        }
+      }
+    },
+    "Couldn't save to Health: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "无法保存到“健康”:%@"
+          }
+        }
+      }
     }
   },
   "version": "1.3"

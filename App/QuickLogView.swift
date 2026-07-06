@@ -21,7 +21,7 @@ struct QuickLogView: View {
         NavigationStack {
             Form {
                 Section {
-                    LabeledContent(kind == .bloodPressure ? "Systolic" : kind.displayName) {
+                    LabeledContent(kind == .bloodPressure ? String(localized: "Systolic") : kind.displayName) {
                         numberField(value: $draft.value)
                     }
                     if kind == .bloodPressure {
@@ -69,7 +69,7 @@ struct QuickLogView: View {
                 lastValue = draft.value
                 lastSecondary = draft.secondary
                 dismiss()
-            } catch { self.error = "Couldn't save to Health: \(error.localizedDescription)" }
+            } catch { self.error = String(localized: "Couldn't save to Health: \(error.localizedDescription)") }
         }
     }
 }

@@ -92,7 +92,7 @@ struct MedEditView: View {
                     }
                 }
             }
-            .navigationTitle(med == nil ? "New medication" : "Edit medication")
+            .navigationTitle(med == nil ? String(localized: "New medication") : String(localized: "Edit medication"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
