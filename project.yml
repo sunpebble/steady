@@ -93,11 +93,23 @@ targets:
         GENERATE_INFOPLIST_FILE: YES
     dependencies:
       - target: Steady
+  SteadyUITests:
+    type: bundle.ui-testing
+    platform: iOS
+    sources:
+      - SteadyUITests
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.sunpebble.steady.uitests
+    dependencies:
+      - target: Steady
 schemes:
   Steady:
     build:
       targets:
         Steady: all
+        SteadyUITests: [test]
     run:
       config: Debug
       storeKitConfiguration: Steady.storekit
@@ -106,3 +118,4 @@ schemes:
     test:
       targets:
         - SteadyTests
+        - SteadyUITests
