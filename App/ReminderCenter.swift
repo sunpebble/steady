@@ -46,7 +46,12 @@ enum ReminderCenter {
 }
 
 enum SettingsStore {
+    /// 演示模式内存覆盖:非 nil 时 targetRange(for:) 直接返回之,跳过 UserDefaults。
+    /// App 重启自动 nil,零残留。
+    static var demoRanges: [Reading.Kind: ClosedRange<Double>]?
+
     static func targetRange(for kind: Reading.Kind) -> ClosedRange<Double>? {
+        if let demoRanges { return demoRanges[kind] }
         let lo = UserDefaults.standard.double(forKey: "target.\(kind.rawValue).lo")
         let hi = UserDefaults.standard.double(forKey: "target.\(kind.rawValue).hi")
         return hi > lo && hi > 0 ? lo...hi : nil
