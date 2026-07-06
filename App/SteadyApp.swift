@@ -14,7 +14,9 @@ struct SteadyApp: App {
                     await pro.listenForTransactions()
                 }
         }
-            // ponytail: CloudKit 容器建失败(无 iCloud 账号等)回退内存库，App 不崩
-            .modelContainer((try? SteadyModels.container()) ?? SteadyModels.testContainer())
+            // ponytail: CloudKit 容器建失败回退内存库；-seedDemo 强制内存库(演示数据零污染)
+            .modelContainer(LaunchArgs.isDemoSeed
+                ? SteadyModels.testContainer()
+                : ((try? SteadyModels.container()) ?? SteadyModels.testContainer()))
     }
 }

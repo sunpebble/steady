@@ -6,6 +6,7 @@ final class HealthStore {
     private let store = HKHealthStore()
     var readings: [Reading] = []
     var authorized = false
+    var isDemo = false
     // preferredUnits 跟随用户在 Health App 里的单位设置，省掉自建单位开关
     private var glucoseUnit: HKUnit = .gramUnit(with: .milli).unitDivided(by: .literUnit(with: .deci))
     private var weightUnit: HKUnit = .gramUnit(with: .kilo)
@@ -18,6 +19,7 @@ final class HealthStore {
 
     @MainActor
     func requestAuthorization() async {
+        if isDemo { authorized = true; return }   // demo: 不碰 HK,readings 已由 DemoData 填充
         guard HKHealthStore.isHealthDataAvailable() else { return }
         let types = Set<HKSampleType>(Self.quantityTypes)
         do {
@@ -84,6 +86,7 @@ final class HealthStore {
 
     @MainActor
     func refresh() async {
+        if isDemo { return }   // demo: 不用 HK 查询覆盖假数据
         // 血压走 correlation 查询；收缩/舒张原始样本不单独出现在时间线
         let types: [HKSampleType] = [HKCorrelationType(.bloodPressure),
             HKQuantityType(.bloodGlucose), HKQuantityType(.bodyMass),

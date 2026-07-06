@@ -3,6 +3,7 @@ import SwiftUI
 struct RootView: View {
     @State private var health = HealthStore()
     @State private var logging: Reading.Kind?
+    @Environment(\.modelContext) private var ctx
 
     var body: some View {
         TabView {
@@ -13,7 +14,13 @@ struct RootView: View {
         }
         .tint(Theme.sun)
         .environment(health)
-        .task { await health.requestAuthorization() }
+        .task {
+            if LaunchArgs.isDemoSeed {
+                health.isDemo = true
+                DemoData.seed(into: health, ctx: ctx)
+            }
+            await health.requestAuthorization()
+        }
         .sheet(item: $logging) { QuickLogView(kind: $0) }
         .onOpenURL { url in
             guard url.scheme == "steady", url.host() == "log",
