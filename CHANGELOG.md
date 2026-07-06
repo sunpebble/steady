@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.0](https://github.com/sunpebble/steady/compare/v0.3.0...v0.4.0) (2026-07-06)
+
+
+### Features
+
+* extend zh-Hans localization to Widget and Watch, fill App gaps ([5b6ba96](https://github.com/sunpebble/steady/commit/5b6ba96bf75b8513344cbeb43002dd868924ca3e))
+
 ## [0.3.0](https://github.com/sunpebble/steady/compare/v0.2.1...v0.3.0) (2026-07-06)
 
 
