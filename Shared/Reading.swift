@@ -100,3 +100,22 @@ struct ReadingDraft {
     var mealtime: Reading.Mealtime? = nil
     var note: String = ""
 }
+
+extension ReadingDraft {
+    /// Reading → Draft,编辑时预填表单。
+    init(reading: Reading) {
+        self.init(kind: reading.kind, date: reading.date, value: reading.value,
+                  secondary: reading.secondary ?? 0, mealtime: reading.mealtime,
+                  note: reading.note ?? "")
+    }
+}
+
+extension Reading {
+    /// Draft → Reading 纯映射(demo 模式增改用,不经 HK)。
+    init(draft: ReadingDraft, id: UUID = UUID()) {
+        self.init(id: id, kind: draft.kind, date: draft.date, value: draft.value,
+                  secondary: draft.kind == .bloodPressure ? draft.secondary : nil,
+                  mealtime: draft.kind == .glucose ? draft.mealtime : nil,
+                  note: draft.note.isEmpty ? nil : draft.note)
+    }
+}
