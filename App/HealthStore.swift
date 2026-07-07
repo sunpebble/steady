@@ -48,6 +48,7 @@ final class HealthStore {
 
     @MainActor
     func save(_ draft: ReadingDraft) async throws {
+        if isDemo { insertLocally(Reading(draft: draft)); return }   // demo: 不写 HK
         var metadata: [String: Any] = [:]
         if !draft.note.isEmpty { metadata[Reading.noteKey] = draft.note }
         let sample: HKSample
@@ -82,6 +83,47 @@ final class HealthStore {
         }
         try await store.save(sample)
         await refresh()
+    }
+
+    /// 只能删本 app 写入的样本;删别家的 HK 会抛 authorizationDenied,由 UI 提示。
+    @MainActor
+    func delete(_ reading: Reading) async throws {
+        if isDemo { readings.removeAll { $0.id == reading.id }; return }
+        let type: HKSampleType = switch reading.kind {
+        case .bloodPressure: HKCorrelationType(.bloodPressure)
+        case .glucose: HKQuantityType(.bloodGlucose)
+        case .weight: HKQuantityType(.bodyMass)
+        case .heartRate: HKQuantityType(.heartRate)
+        case .oxygen: HKQuantityType(.oxygenSaturation)
+        }
+        let samples: [HKSample] = await withCheckedContinuation { cont in
+            let q = HKSampleQuery(sampleType: type,
+                predicate: HKQuery.predicateForObject(with: reading.id),
+                limit: 1, sortDescriptors: nil) {
+                cont.resume(returning: $2 == nil ? ($1 ?? []) : []) }
+            store.execute(q)
+        }
+        guard let sample = samples.first else { await refresh(); return }
+        if let corr = sample as? HKCorrelation {
+            // 血压 correlation 要连收缩/舒张子样本一起删,否则留下孤儿样本
+            try await store.delete(Array(corr.objects) + [corr])
+        } else {
+            try await store.delete(sample)
+        }
+        await refresh()
+    }
+
+    /// HK 样本不可变,改 = 删旧 + 存新。
+    @MainActor
+    func update(_ reading: Reading, with draft: ReadingDraft) async throws {
+        try await delete(reading)
+        try await save(draft)
+    }
+
+    @MainActor
+    private func insertLocally(_ reading: Reading) {
+        readings.append(reading)
+        readings.sort { $0.date > $1.date }
     }
 
     @MainActor

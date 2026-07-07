@@ -4,17 +4,19 @@ struct QuickLogView: View {
     @Environment(HealthStore.self) private var health
     @Environment(\.dismiss) private var dismiss
     let kind: Reading.Kind
+    let editing: Reading?          // 非 nil = 编辑已有记录
     @State private var draft: ReadingDraft
     @State private var error: String?
     // 记住上次值作默认，减少输入
     @AppStorage private var lastValue: Double
     @AppStorage private var lastSecondary: Double
 
-    init(kind: Reading.Kind) {
+    init(kind: Reading.Kind, editing: Reading? = nil) {
         self.kind = kind
+        self.editing = editing
         _lastValue = AppStorage(wrappedValue: 0, "last.\(kind.rawValue).value")
         _lastSecondary = AppStorage(wrappedValue: 0, "last.\(kind.rawValue).secondary")
-        _draft = State(initialValue: ReadingDraft(kind: kind))
+        _draft = State(initialValue: editing.map(ReadingDraft.init(reading:)) ?? ReadingDraft(kind: kind))
     }
 
     var body: some View {
@@ -36,6 +38,12 @@ struct QuickLogView: View {
                     DatePicker("Time", selection: $draft.date)
                     TextField("Note", text: $draft.note)
                 }
+                if editing != nil {
+                    Section {
+                        Button("Delete", role: .destructive) { delete() }
+                            .frame(maxWidth: .infinity)
+                    }
+                }
                 if let error { Section { Text(error).foregroundStyle(.red) } }
             }
             .navigationTitle(kind.displayName)
@@ -48,6 +56,7 @@ struct QuickLogView: View {
                 }
             }
             .onAppear {
+                guard editing == nil else { return }   // 编辑时用原值,不覆盖
                 draft.value = lastValue
                 draft.secondary = lastSecondary
             }
@@ -65,11 +74,25 @@ struct QuickLogView: View {
     private func save() {
         Task {
             do {
-                try await health.save(draft)
-                lastValue = draft.value
-                lastSecondary = draft.secondary
+                if let editing {
+                    try await health.update(editing, with: draft)
+                } else {
+                    try await health.save(draft)
+                    lastValue = draft.value
+                    lastSecondary = draft.secondary
+                }
                 dismiss()
             } catch { self.error = String(localized: "Couldn't save to Health: \(error.localizedDescription)") }
+        }
+    }
+
+    private func delete() {
+        guard let editing else { return }
+        Task {
+            do {
+                try await health.delete(editing)
+                dismiss()
+            } catch { self.error = String(localized: "Couldn't delete from Health: \(error.localizedDescription)") }
         }
     }
 }
