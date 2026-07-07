@@ -49,12 +49,12 @@ enum DemoData {
         let today8 = cal.date(bySettingHour: 8, minute: 0, second: 0, of: now)!
         ctx.insert(MedLog(date: today8, slot: 8 * 60, taken: true, medication: metformin))
         ctx.insert(MedLog(date: today8, slot: 8 * 60, taken: true, medication: lisinopril))
-        ctx.insert(SymptomEntry(name: "Headache", severity: 2,
-            date: cal.date(byAdding: .hour, value: -6, to: now)!, note: "after lunch"))
-        ctx.insert(SymptomEntry(name: "Fatigue", severity: 1,
+        ctx.insert(SymptomEntry(name: String(localized: "Headache"), severity: 2,
+            date: cal.date(byAdding: .hour, value: -6, to: now)!, note: String(localized: "after lunch")))
+        ctx.insert(SymptomEntry(name: String(localized: "Fatigue"), severity: 1,
             date: cal.date(byAdding: .day, value: -1, to: now)!, note: ""))
-        ctx.insert(SymptomEntry(name: "Dizziness", severity: 3,
-            date: cal.date(byAdding: .day, value: -3, to: now)!, note: "morning"))
+        ctx.insert(SymptomEntry(name: String(localized: "Dizziness"), severity: 3,
+            date: cal.date(byAdding: .day, value: -3, to: now)!, note: String(localized: "morning")))
         try? ctx.save()
     }
 }

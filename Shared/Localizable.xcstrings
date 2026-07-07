@@ -91,6 +91,16 @@
         }
       }
     },
+    "after lunch": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "午饭后"
+          }
+        }
+      }
+    },
     "After meal": {
       "localizations": {
         "zh-Hans": {
@@ -201,6 +211,16 @@
         }
       }
     },
+    "Dizziness": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "头晕"
+          }
+        }
+      }
+    },
     "Doctor report": {
       "localizations": {
         "zh-Hans": {
@@ -271,6 +291,16 @@
         }
       }
     },
+    "Fatigue": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "乏力"
+          }
+        }
+      }
+    },
     "From": {
       "localizations": {
         "zh-Hans": {
@@ -287,6 +317,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "生成 PDF"
+          }
+        }
+      }
+    },
+    "Headache": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "头痛"
           }
         }
       }
@@ -407,6 +447,16 @@
           "stringUnit": {
             "state": "translated",
             "value": "中等"
+          }
+        }
+      }
+    },
+    "morning": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "早晨"
           }
         }
       }

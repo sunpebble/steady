@@ -87,7 +87,8 @@ struct TrendsView: View {
         Chart(data) { reading in
             LineMark(
                 x: .value("Date", reading.date),
-                y: .value(kind.displayName, reading.value))
+                y: .value(kind.displayName, reading.value),
+                series: .value("Series", "Primary"))
                 .foregroundStyle(Theme.sun)
             PointMark(
                 x: .value("Date", reading.date),
@@ -97,7 +98,8 @@ struct TrendsView: View {
             if let secondary = reading.secondary {
                 LineMark(
                     x: .value("Date", reading.date),
-                    y: .value("Diastolic", secondary))
+                    y: .value("Diastolic", secondary),
+                    series: .value("Series", "Diastolic"))
                     .foregroundStyle(Theme.pebble)
             }
         }

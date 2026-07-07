@@ -14,8 +14,8 @@ struct ReportView: View {
 
     var body: some View {
         Form {
-            DatePicker("From", selection: $start, displayedComponents: .date)
-            DatePicker("To", selection: $end, displayedComponents: .date)
+            dateRow("From", selection: $start)
+            dateRow("To", selection: $end)
             Button("Generate PDF", systemImage: "doc.richtext") {
                 if pro.isPro {
                     render()
@@ -31,6 +31,19 @@ struct ReportView: View {
         }
         .navigationTitle("Doctor report")
         .sheet(isPresented: $showPaywall) { PaywallView() }
+    }
+
+    /// 系统紧凑 DatePicker 在同屏可能用两种日期格式;自己画统一格式的文字,拾取器保持可点但不可见。
+    private func dateRow(_ title: LocalizedStringKey, selection: Binding<Date>) -> some View {
+        LabeledContent(title) {
+            ZStack {
+                DatePicker(title, selection: selection, displayedComponents: .date)
+                    .labelsHidden()
+                    .colorMultiply(.clear)
+                Text(selection.wrappedValue.formatted(date: .abbreviated, time: .omitted))
+                    .allowsHitTesting(false)
+            }
+        }
     }
 
     private var model: ReportModel {
