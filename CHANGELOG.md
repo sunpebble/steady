@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.5.0](https://github.com/sunpebble/steady/compare/v0.4.0...v0.5.0) (2026-07-07)
+
+
+### Features
+
+* add edit and delete for readings, symptoms, and med logs ([#5](https://github.com/sunpebble/steady/issues/5)) ([242cf18](https://github.com/sunpebble/steady/commit/242cf183823c0e21c8a71bdb1b3d772f4f91a645))
+
+
+### Bug Fixes
+
+* import SwiftData explicitly in RootView ([4cd9b8b](https://github.com/sunpebble/steady/commit/4cd9b8b3947737c7067b83421aa21cfe7843b2d4))
+
 ## [0.4.0](https://github.com/sunpebble/steady/compare/v0.3.0...v0.4.0) (2026-07-06)
 
 
