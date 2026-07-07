@@ -960,6 +960,16 @@
           }
         }
       }
+    },
+    "Your changes were saved, but the original entry couldn't be removed: %@": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "改动已保存,但原记录无法移除:%@"
+          }
+        }
+      }
     }
   },
   "version": "1.3"

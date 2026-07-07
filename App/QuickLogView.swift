@@ -8,6 +8,7 @@ struct QuickLogView: View {
     @State private var draft: ReadingDraft
     @State private var confirmingDelete = false
     @State private var error: String?
+    @State private var partialError: String?   // 新值已保存,仅旧记录删除失败
     // 记住上次值作默认，减少输入
     @AppStorage private var lastValue: Double
     @AppStorage private var lastSecondary: Double
@@ -59,6 +60,12 @@ struct QuickLogView: View {
             .confirmationDialog("Delete this entry?", isPresented: $confirmingDelete, titleVisibility: .visible) {
                 Button("Delete", role: .destructive) { delete() }
             }
+            // 确认后关表单:改动已生效,留在表单里重试只会再写一条
+            .alert(partialError ?? "", isPresented: Binding(
+                get: { partialError != nil },
+                set: { if !$0 { partialError = nil; dismiss() } })) {
+                Button("OK", role: .cancel) {}
+            }
             .onAppear {
                 guard editing == nil else { return }   // 编辑时用原值,不覆盖
                 draft.value = lastValue
@@ -86,6 +93,8 @@ struct QuickLogView: View {
                     lastSecondary = draft.secondary
                 }
                 dismiss()
+            } catch HealthStore.UpdateError.deleteFailed(let underlying) {
+                partialError = String(localized: "Your changes were saved, but the original entry couldn't be removed: \(underlying.localizedDescription)")
             } catch { self.error = String(localized: "Couldn't save to Health: \(error.localizedDescription)") }
         }
     }

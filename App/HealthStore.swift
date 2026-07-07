@@ -115,11 +115,17 @@ final class HealthStore {
         await refresh()
     }
 
+    enum UpdateError: Error {
+        /// 新值已写入,旧样本删除失败(例如样本来自别家 app,HK 不允许删)。
+        case deleteFailed(underlying: Error)
+    }
+
     /// HK 样本不可变,改 = 存新 + 删旧。先存:存失败原记录还在;删失败最多留重复,不丢数据。
     @MainActor
     func update(_ reading: Reading, with draft: ReadingDraft) async throws {
         try await save(draft)
-        try await delete(reading)
+        do { try await delete(reading) }
+        catch { throw UpdateError.deleteFailed(underlying: error) }
     }
 
     @MainActor
