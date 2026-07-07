@@ -96,11 +96,13 @@ final class HealthStore {
         case .heartRate: HKQuantityType(.heartRate)
         case .oxygen: HKQuantityType(.oxygenSaturation)
         }
-        let samples: [HKSample] = await withCheckedContinuation { cont in
+        let samples: [HKSample] = try await withCheckedThrowingContinuation { cont in
             let q = HKSampleQuery(sampleType: type,
                 predicate: HKQuery.predicateForObject(with: reading.id),
-                limit: 1, sortDescriptors: nil) {
-                cont.resume(returning: $2 == nil ? ($1 ?? []) : []) }
+                limit: 1, sortDescriptors: nil) { _, samples, error in
+                if let error { cont.resume(throwing: error) }
+                else { cont.resume(returning: samples ?? []) }
+            }
             store.execute(q)
         }
         guard let sample = samples.first else { await refresh(); return }
@@ -113,11 +115,11 @@ final class HealthStore {
         await refresh()
     }
 
-    /// HK 样本不可变,改 = 删旧 + 存新。
+    /// HK 样本不可变,改 = 存新 + 删旧。先存:存失败原记录还在;删失败最多留重复,不丢数据。
     @MainActor
     func update(_ reading: Reading, with draft: ReadingDraft) async throws {
-        try await delete(reading)
         try await save(draft)
+        try await delete(reading)
     }
 
     @MainActor

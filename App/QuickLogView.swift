@@ -6,6 +6,7 @@ struct QuickLogView: View {
     let kind: Reading.Kind
     let editing: Reading?          // 非 nil = 编辑已有记录
     @State private var draft: ReadingDraft
+    @State private var confirmingDelete = false
     @State private var error: String?
     // 记住上次值作默认，减少输入
     @AppStorage private var lastValue: Double
@@ -40,7 +41,7 @@ struct QuickLogView: View {
                 }
                 if editing != nil {
                     Section {
-                        Button("Delete", role: .destructive) { delete() }
+                        Button("Delete", role: .destructive) { confirmingDelete = true }
                             .frame(maxWidth: .infinity)
                     }
                 }
@@ -54,6 +55,9 @@ struct QuickLogView: View {
                     Button("Save") { save() }
                         .disabled(draft.value <= 0 || (kind == .bloodPressure && draft.secondary <= 0))
                 }
+            }
+            .confirmationDialog("Delete this entry?", isPresented: $confirmingDelete, titleVisibility: .visible) {
+                Button("Delete", role: .destructive) { delete() }
             }
             .onAppear {
                 guard editing == nil else { return }   // 编辑时用原值,不覆盖

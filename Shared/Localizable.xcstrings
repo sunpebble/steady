@@ -950,6 +950,16 @@
           }
         }
       }
+    },
+    "Delete this entry?": {
+      "localizations": {
+        "zh-Hans": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "删除这条记录？"
+          }
+        }
+      }
     }
   },
   "version": "1.3"

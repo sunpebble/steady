@@ -9,6 +9,7 @@ struct TimelineView: View {
     @State private var loggingSymptom = false
     @State private var editingReading: Reading?
     @State private var editingSymptom: SymptomEntry?
+    @State private var pendingDelete: Item?
     @State private var deleteError: String?
 
     private enum Item: Identifiable {
@@ -50,9 +51,9 @@ struct TimelineView: View {
                         ForEach(day.items) { item in
                             row(item)
                                 .swipeActions {
-                                    Button("Delete", systemImage: "trash", role: .destructive) {
-                                        delete(item)
-                                    }
+                                    // 不用 .destructive role:先弹确认,避免行被乐观移除
+                                    Button("Delete", systemImage: "trash") { pendingDelete = item }
+                                        .tint(.red)
                                 }
                         }
                     }
@@ -65,6 +66,12 @@ struct TimelineView: View {
             .sheet(isPresented: $loggingSymptom) { SymptomLogView() }
             .sheet(item: $editingReading) { QuickLogView(kind: $0.kind, editing: $0) }
             .sheet(item: $editingSymptom) { SymptomLogView(entry: $0) }
+            .confirmationDialog("Delete this entry?", isPresented: Binding(
+                get: { pendingDelete != nil },
+                set: { if !$0 { pendingDelete = nil } }),
+                titleVisibility: .visible, presenting: pendingDelete) { item in
+                Button("Delete", role: .destructive) { delete(item) }
+            }
             .alert(deleteError ?? "", isPresented: Binding(
                 get: { deleteError != nil },
                 set: { if !$0 { deleteError = nil } })) {
@@ -136,6 +143,7 @@ struct SymptomLogView: View {
     @State private var severity = 1
     @State private var date = Date.now
     @State private var note = ""
+    @State private var confirmingDelete = false
 
     init(entry: SymptomEntry? = nil) { self.entry = entry }
 
@@ -150,12 +158,15 @@ struct SymptomLogView: View {
                 TextField("Note", text: $note)
                 if entry != nil {
                     Section {
-                        Button("Delete", role: .destructive) {
-                            if let entry { ctx.delete(entry) }
-                            dismiss()
-                        }
-                        .frame(maxWidth: .infinity)
+                        Button("Delete", role: .destructive) { confirmingDelete = true }
+                            .frame(maxWidth: .infinity)
                     }
+                }
+            }
+            .confirmationDialog("Delete this entry?", isPresented: $confirmingDelete, titleVisibility: .visible) {
+                Button("Delete", role: .destructive) {
+                    if let entry { ctx.delete(entry) }
+                    dismiss()
                 }
             }
             .navigationTitle(entry == nil ? String(localized: "Log symptom") : String(localized: "Edit symptom"))
