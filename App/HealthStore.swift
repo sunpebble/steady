@@ -154,7 +154,6 @@ final class HealthStore {
         readings = all.sorted { $0.date > $1.date }
     }
 
-    // ponytail: 前台 observer 刷新；后台推送投递等有 widget 数据需求再加
     private func observeChanges() {
         for type in Self.quantityTypes {
             let q = HKObserverQuery(sampleType: type, predicate: nil) { [weak self] _, done, _ in
